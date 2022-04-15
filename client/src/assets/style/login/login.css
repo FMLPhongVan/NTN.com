@@ -1,0 +1,58 @@
+.login-checkbox-container {
+    position: relative;
+    padding: 0px 0px 0px 15px;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.login-checkbox-container input {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.login-checkmark {
+    position: absolute;
+    top: 2px;
+    left: 0px;
+    width: 13px;
+    height: 13px;
+    background-color: #eeeeee;
+}
+
+.login-checkbox-container:hover .login-checkmark {
+    background-color: #ccc;
+}
+
+.login-checkbox-container input:checked ~ .login-checkmark {
+    background-color: #27ae60;
+}
+
+.login-checkmark::after {
+    content: "";
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 5px;
+    height: 5px;
+    display: none;
+}
+
+
+.login-checkmark::after {
+    top: 2px;
+    width: 3px;
+    height: 6px;
+    border: solid white;
+    transform: rotate(45deg);
+    border-width: 0px 2px 2px 0px;
+}
+
+.login-checkbox-container input:checked ~ .login-checkmark::after {
+    display: block;
+}
