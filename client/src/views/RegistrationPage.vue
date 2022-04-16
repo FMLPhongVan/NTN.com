@@ -2,40 +2,40 @@
     <div id="main">
         <div id="container">
             <form method="post" @submit.prevent>
-                <h1>Welcome to NTN</h1>
-                <h2>Registration</h2>
+                <h1>Chào mừng bạn đến với NTN</h1>
+                <h2>Đăng ký</h2>
                 <div class="flex-container flex-row">
                     <div class="col-3">
-                        <label for="firstname">First Name</label>
-                        <input type="text" placeholder="Tùng" id="firstname" required>
+                        <label for="lastname">Họ</label>
+                        <input type="text" placeholder="Đoàn" id="lastname">
                     </div>
                     <div class="col-3">
-                        <label for="middlename">Middle Name</label>
+                        <label for="middlename">Đệm</label>
                         <input type="text" placeholder="Duy" id="middlename">
                     </div>
                     <div class="col-3">
-                        <label for="lastname">Last Name</label>
-                        <input type="text" placeholder="Đoàn" id="lastname">
+                        <label for="firstname">Tên</label>
+                        <input type="text" placeholder="Tùng" id="firstname" required>
                     </div>
                 </div>
                 <div class="flex-container flex-row">
                     <div class="col-2">
-                        <label for="dob">Birthday</label>
+                        <label for="dob">Ngày sinh</label>
                         <input type="date" id="dob" required>
                     </div>
                     <div class="col-2">
-                        <label>Gender</label>
+                        <label>Giới tính</label>
                         <div class="flex-container">
                             <label for="male" class="radio-box col-3">
-                                <input type="radio" name="sex" id="male" checked="checked">Male
+                                <input type="radio" name="sex" id="male" checked="checked">Nam
                                 <span class="radio-checkmark"></span>
                             </label>
                             <label for="female" class="radio-box col-3">
-                                <input type="radio" name="sex" id="female">Female
+                                <input type="radio" name="sex" id="female">Nữ
                                 <span class="radio-checkmark"></span>
                             </label>
                             <label for="other" class="radio-box col-3">
-                                <input type="radio" name="sex" id="other">Other
+                                <input type="radio" name="sex" id="other">Khác
                                 <span class="radio-checkmark"></span>
                             </label>
                         </div>
@@ -43,21 +43,21 @@
                 </div>
                 <div class="flex-container">
                     <div class="col-2">
-                        <label for="username">Username</label>
+                        <label for="username">Tài khoản</label>
                         <input type="text" placeholder="tung.doan.3" id="username" required>
                         <span class="login-err"></span>
                     </div>
                 </div>
                 <div class="flex-container">
                     <div class="col-2">
-                        <label for="password">Password</label>
+                        <label for="password">Mật khẩu</label>
                         <input type="password" id="password" required>
                         <span class="login-err"></span>
                     </div>
                 </div>
                 <div class="flex-container">
                     <div class="col-2">
-                        <label for="re-password">Retype Password</label>
+                        <label for="re-password">Nhập lại mật khẩu</label>
                         <input type="password" id="re-password" required>
                         <span class="login-err"></span>
                     </div>
@@ -66,12 +66,12 @@
                 <button class="login-btn button-68"
                         title="CLick to login"
                         @click="submit">
-                    SIGN UP
+                    Đăng ký
                 </button>
             </form>
 
-            <h4>Already have an account ?</h4>
-            <router-link to="/login" class="login-btn button-69">LOGIN</router-link>
+            <h4>Bạn đã có tài khoản ?</h4>
+            <router-link to="/login" class="login-btn button-69">Đăng nhập</router-link>
 
 
             <footer><a href="">NTN.com</a></footer>
