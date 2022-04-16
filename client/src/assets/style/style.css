@@ -31,7 +31,6 @@ html {
     letter-spacing: normal;
     line-height: 1.5;
     outline: none;
-    overflow: hidden;
     padding: 13px 20px;
     position: relative;
     text-align: center;
@@ -80,7 +79,6 @@ html {
     letter-spacing: normal;
     line-height: 1.5;
     outline: none;
-    overflow: hidden;
     padding: 13px 20px;
     position: relative;
     text-align: center;
@@ -118,6 +116,7 @@ html {
 
 .flex-row {
     flex-direction: row;
+    width: 100%;
 }
 
 .flex-col {

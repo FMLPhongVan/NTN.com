@@ -1,7 +1,7 @@
 <template>
     <div id="main">
         <div id="container">
-            <form>
+            <form @submit.prevent>
                 <h1>Welcome to NTN</h1>
                 <h2>Login</h2>
                 <div class="field-container" id="user-field">
@@ -31,15 +31,14 @@
                 </div>
 
                 <div id="login-options">
-                    <label class="login-checkbox-container">
+                    <label class="checkbox-container">
                         <input type="checkbox">Remember me
-                        <span class="login-checkmark"></span>
+                        <span class="checkbox-checkmark"></span>
                     </label>
                     <span id="forgot">Forgot password ?</span>
                 </div>
 
                 <button class="login-btn button-68"
-                        type="button"
                         title="CLick to login"
                         @click="submit">
                     LOGIN
@@ -47,7 +46,7 @@
             </form>
 
             <h4>Don't have account ?</h4>
-            <button class="login-btn button-69">SIGN UP</button>
+            <router-link to="/registration" class="login-btn button-69">CREATE A NEW ACCOUNT</router-link>
 
             <footer><a href="">NTN.com</a></footer>
         </div>
@@ -80,17 +79,17 @@ export default {
     methods: {
         submit() {
             if (this.account.username !== '' && this.account.password !== '') {
-                console.log(this.username, this.password);
+                console.log(this.account.username);
             }
 
-            this.account.username = '';
-            this.account.password = '';
+            // this.account.username = '';
+            // this.account.password = '';
         }
     }
 }
 </script>
 
-<style scoped>
+<style lang="css" scoped>
 div#main {
     position: fixed;
     top: 0px;
@@ -194,5 +193,9 @@ span.login-err {
     height: 1.5rem;
     position: absolute;
     color: grey;
+}
+
+.router-link-active {
+    text-decoration: none;
 }
 </style>
