@@ -1,11 +1,13 @@
-.login-checkbox-container {
+.radio-box,
+.checkbox-container {
     position: relative;
     padding: 0px 0px 0px 15px;
     cursor: pointer;
     display: inline-block;
 }
 
-.login-checkbox-container input {
+.radio-box input,
+.checkbox-container input {
     position: absolute;
     top: 0px;
     left: 0px;
@@ -16,7 +18,8 @@
     z-index: 1;
 }
 
-.login-checkmark {
+.radio-checkmark,
+.checkbox-checkmark {
     position: absolute;
     top: 2px;
     left: 0px;
@@ -25,15 +28,22 @@
     background-color: #eeeeee;
 }
 
-.login-checkbox-container:hover .login-checkmark {
+.radio-checkmark {
+    border-radius: 50%;
+}
+
+.radio-box:hover .radio-checkmark,
+.checkbox-container:hover .checkbox-checkmark {
     background-color: #ccc;
 }
 
-.login-checkbox-container input:checked ~ .login-checkmark {
-    background-color: #27ae60;
+.checkbox-container input:checked ~ .checkbox-checkmark,
+.radio-box input:checked ~ .radio-checkmark {
+    background-color: #27aE60;
 }
 
-.login-checkmark::after {
+.radio-checkmark::after,
+.checkbox-checkmark::after {
     content: "";
     position: absolute;
     top: 4px;
@@ -43,8 +53,12 @@
     display: none;
 }
 
+.radio-checkmark:after {
+    background-color: white;
+    border-radius: 50%;
+}
 
-.login-checkmark::after {
+.checkbox-checkmark::after {
     top: 2px;
     width: 3px;
     height: 6px;
@@ -53,6 +67,7 @@
     border-width: 0px 2px 2px 0px;
 }
 
-.login-checkbox-container input:checked ~ .login-checkmark::after {
+.radio-box input:checked ~ .radio-checkmark::after,
+.checkbox-container input:checked ~ .checkbox-checkmark::after {
     display: block;
 }
