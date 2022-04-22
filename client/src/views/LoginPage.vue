@@ -91,24 +91,25 @@ export default {
 
 <style lang="css" scoped>
 div#main {
-    position: fixed;
-    top: 0px;
-    bottom: 0px;
-    left: 0px;
-    right: 0px;
+    position: relative;
+    overflow: auto;
+    width: 100vw;
+    height: 100vh;
     background-color: rgba(0, 0, 0, 0.4);
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
+    overflow-y: scroll;
 }
 
 div#container {
     /*margin: auto;*/
     position: relative;
+    height: auto;
     width: 30rem;
     background-color: white;
     border-radius: 15px;
-    padding: 30px 50px;
+    padding: 24px 40px;
 }
 
 form {
