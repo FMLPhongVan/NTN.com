@@ -4,6 +4,18 @@ const numReg = /[0-9]{1,}/g;
 const specReg = /\.|_|#|@|!|&|\^/g;
 const otherReg = /[^a-zA-Z0-9._#@!&^]/g;
 
+const rules = {
+  required: (value) => !!value || "Bạn chưa điền mục này",
+  min: (v) => v.length >= 8 || "Tối thiểu 8 ký tự",
+  azCheck: (value) => {
+    return azReg.test(value) || `của bạn phải có chữ cái thường`;
+  },
+};
+
+const loginRules = {
+  username: [rules.min, rules.required],
+};
+
 function isValidName(name) {
   var re = /^[a-zA-Z]{2,}$/g; // regex here
   return re.test(removeAscent(name));
@@ -45,4 +57,4 @@ function isValidPassword(pwd) {
   );
 }
 
-export { isValidName, isValidUserName, isValidPassword };
+export { isValidName, isValidUserName, isValidPassword, rules, loginRules };

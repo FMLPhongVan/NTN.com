@@ -12,7 +12,9 @@
             counter="64"
             maxlength="64"
             clearable
-            bg-color="white"
+            color="green-darken-2"
+            v-model="account.username"
+            :rules="loginRules.username"
           ></v-text-field>
         </div>
         <div>
@@ -20,6 +22,11 @@
             label="Mật khẩu"
             placeholder="Nhập mật khẩu của bạn"
             prepend-inner-icon="mdi-lock-outline"
+            counter="64"
+            maxlength="64"
+            clearable
+            color="green-darken-2"
+            v-model="account.password"
           ></v-text-field>
         </div>
       </v-form>
@@ -28,38 +35,6 @@
   <div id="main">
     <div id="container">
       <form @submit.prevent>
-        <h1>Chào mừng đến với NTN</h1>
-        <h2>Đăng nhập</h2>
-        <div class="field-container" id="user-field">
-          <h3>Tài khoản</h3>
-          <label>
-            <UserIcon class="user-icon" />
-            <input
-              type="text"
-              placeholder="Nhập username của bạn"
-              required
-              class="login-input"
-              v-model.lazy="account.username"
-            />
-          </label>
-          <span class="login-err">Wrong username</span>
-        </div>
-
-        <div class="field-container" id="pwd-field">
-          <h3>Mật khẩu</h3>
-          <label>
-            <LockClosedIcon class="pwd-icon" />
-            <input
-              type="password"
-              placeholder="Nhập mật khẩu của bạn"
-              required
-              class="login-input"
-              v-model.lazy="account.password"
-            />
-          </label>
-          <span class="login-err">Wrong password</span>
-        </div>
-
         <div id="login-options">
           <label class="checkbox-container">
             <input type="checkbox" />Duy trì đăng nhập
@@ -89,13 +64,11 @@
 
 <script>
 // heroicons import
-import { UserIcon, LockClosedIcon } from "@heroicons/vue/outline";
+//
+import { loginRules } from "@/utils/FormValidate.js";
 
 export default {
-  components: {
-    UserIcon,
-    LockClosedIcon,
-  },
+  components: {},
 
   data() {
     return {
@@ -103,6 +76,7 @@ export default {
         username: "",
         password: "",
       },
+      loginRules,
     };
   },
 
@@ -120,9 +94,45 @@ export default {
 </script>
 
 <style lang="scss">
-.v-field--focus {
+.v-field__overlay {
   background-color: white !important;
 }
+
+.v-label.v-field-label--floating {
+  --v-field-label-scale: 1.1rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  top: -0.25rem !important;
+}
+
+.v-field--error {
+  &:not(.v-field--disabled) {
+    .v-label.v-field-label {
+      color: red;
+    }
+    .v-field__prepend-inner {
+      > .v-icon {
+        color: red;
+      }
+    }
+  }
+}
+
+.v-input--error {
+  &:not(.v-input--disabled) {
+    .v-input__details {
+      .v-messages {
+        color: red;
+      }
+    }
+  }
+}
+
+//.v-field--error:not(.v-field--disabled) .v-label.v-field-label,
+//.v-input--error:not(.v-input--disabled) .v-input__details .v-messages,
+//.v-field--error:not(.v-field--disabled) .v-field__prepend-inner > .v-icon {
+//  color: red;
+//}
 
 div#main {
   position: relative;
