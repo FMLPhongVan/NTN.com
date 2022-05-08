@@ -1,10 +1,8 @@
 <template>
   <header class="header">
-    <div class="logo">
-      <img src="/assets/logo.png" />
-    </div>
+    <div class="logo"></div>
     <v-row id="search-wrapper">
-      <v-text-field
+      <v-autocomplete
         label="Tìm kiếm"
         placeholder="Tìm kiếm"
         variant="contained"
@@ -13,9 +11,28 @@
         single-line
         clearable
         hide-details
+        hide-selected
+        flat
+        :items="suggestion"
+        @keyup.enter="searching = true"
         prepend-inner-icon="mdi-magnify"
         v-model.lazy="searchContent"
-      ></v-text-field>
+      >
+        <template v-slot:no-data>
+          <v-list-item>
+            <v-list-item-title>
+              Tìm kiếm
+              <strong>{{ searchContent }}</strong>
+            </v-list-item-title>
+          </v-list-item>
+        </template>
+      </v-autocomplete>
+      <v-progress-circular
+        v-if="searching"
+        size="24"
+        color="#27ae60"
+        indeterminate
+      ></v-progress-circular>
     </v-row>
     <nav>
       <router-link to="/home" :class="homeInUse" class="page-tab">
@@ -39,20 +56,20 @@
     </nav>
     <router-link to="/profile" class="profile">
       <div class="user-profile">
-        <div class="user-avatar"></div>
+        <div class="user-avatar avatar"></div>
         <div class="user-name">
           {{ displayName }}
         </div>
       </div>
     </router-link>
-    <div
+    <v-card
       id="options"
-      type="button"
+      :color="optionsShow ? '#23ae60' : undefined"
       @click="optionsShow = !optionsShow"
       :class="{ 'opts-show': optionsShow }"
     >
       <options-icon></options-icon>
-    </div>
+    </v-card>
   </header>
 </template>
 
@@ -79,10 +96,19 @@ export default {
   data() {
     return {
       searchContent: "",
+      searching: false,
+      suggestion: [1, 2, 3],
       displayName: "Tunggggggggg",
       notiShow: false,
       optionsShow: false,
     };
+  },
+
+  watch: {
+    searching(val) {
+      if (!val) return;
+      setTimeout(() => (this.searching = false), 2500);
+    },
   },
 };
 </script>
@@ -110,12 +136,12 @@ button:not(:disabled) {
 }
 
 .logo {
-  margin-top: 8px;
-  margin-bottom: 8px;
-  width: 44px;
-  height: 44px;
-  margin-right: 14px;
-  margin-left: 14px;
+  background-image: url("../assets/NTNlogo.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  width: 60px;
+  margin-right: 20px;
+  margin-left: 10px;
 }
 
 img {
@@ -124,16 +150,24 @@ img {
 
 #search-wrapper {
   display: flex;
-  align-self: center;
+  align-items: center;
   margin-top: 2px;
   margin-bottom: 2px;
-  width: 250px !important;
   flex: none;
 }
 
 .v-text-field {
   background-color: #f0f0f0 !important;
   border-radius: 100px;
+}
+
+.v-autocomplete__selection {
+  display: none;
+}
+
+.v-autocomplete--single.v-text-field input {
+  align-self: center;
+  position: relative;
 }
 
 .v-label.v-field-label {
@@ -144,6 +178,7 @@ img {
 
 .v-input--density-default .v-field--variant-contained {
   --v-input-control-height: 40px;
+  width: 250px;
   border-radius: 100px;
   background: #f5f5f5;
 }
@@ -155,6 +190,18 @@ img {
   padding: 0;
   align-self: center;
   color: #07ab4b;
+}
+
+.v-field__append-inner > .v-icon {
+  display: none;
+}
+
+.v-progress-circular {
+  margin-left: 6px;
+}
+
+.v-list {
+  color: #27ae60;
 }
 
 nav {
@@ -224,7 +271,7 @@ nav {
   color: #27ae60;
   text-decoration: none;
   align-items: center;
-  font-size: 125%;
+  font-size: 100%;
   padding-right: 5px;
   border-radius: 50px;
   border-top-right-radius: 20px;
@@ -240,7 +287,7 @@ nav {
   transform: translateX(5px) scale(1.05);
 }
 
-.user-avatar {
+.avatar {
   width: 52px;
   height: 52px;
   padding: 1.5px;
@@ -269,6 +316,7 @@ nav {
 }
 
 .opts-show {
-  background-color: #f0f0f0;
+  color: white !important;
+  transition-duration: 0.35s;
 }
 </style>
