@@ -1,19 +1,31 @@
-const azReg = /[a-z]{1,}/g;
-const AZReg = /[A-Z]{1,}/g;
-const numReg = /[0-9]{1,}/g;
-const specReg = /\.|_|#|@|!|&|\^/g;
+const azReg = /[a-z]/g;
+const AZReg = /[A-Z]/g;
+const numReg = /[0-9]/g;
+const specReg = /[!@#$^&.]/g;
 const otherReg = /[^a-zA-Z0-9._#@!&^]/g;
 
 const rules = {
   required: (value) => !!value || "Bạn chưa điền mục này",
   min: (v) => v.length >= 8 || "Tối thiểu 8 ký tự",
-  azCheck: (value) => {
-    return azReg.test(value) || `của bạn phải có chữ cái thường`;
-  },
+  azCheck: (value) => azReg.test(value) || "Phải có tối thiểu 1 chữ cái thường",
+  AZCheck: (value) => AZReg.test(value) || "Phải có tối thiểu 1 chữ cái hoa",
+  numCheck: (value) => numReg.test(value) || "Phải có tối thiểu 1 chữ số",
+  specCheck: (value) =>
+    specReg.test(value) ||
+    "Phải có tối thiểu 1 kí tự đặc biệt (!, @, #, $, ^, &, .)",
 };
 
 const loginRules = {
   username: [rules.min, rules.required],
+  password: [
+    rules.required,
+    rules.min,
+    rules.azCheck,
+    rules.AZCheck,
+    rules.numCheck,
+    rules.specCheck,
+  ],
+  showPassword: false,
 };
 
 function isValidName(name) {

@@ -1,10 +1,10 @@
 <template>
-  <v-main>
-    <v-container>
+  <v-main class="login-bg">
+    <v-container class="login-ctn">
       <v-form>
-        <h1>Chào mừng đến với NTN</h1>
-        <h2>Đăng nhập</h2>
-        <div>
+        <h1 class="text-center my-2">Chào mừng đến với NTN</h1>
+        <h2 class="text-center my-2">Đăng nhập</h2>
+        <v-row class="mt-2">
           <v-text-field
             label="Tài khoản"
             placeholder="Nhập username của bạn"
@@ -12,59 +12,69 @@
             counter="64"
             maxlength="64"
             clearable
+            variant="underlined"
             color="green-darken-2"
-            v-model="account.username"
+            v-model.lazy="account.username"
             :rules="loginRules.username"
           ></v-text-field>
-        </div>
-        <div>
+        </v-row>
+        <v-row>
           <v-text-field
             label="Mật khẩu"
             placeholder="Nhập mật khẩu của bạn"
             prepend-inner-icon="mdi-lock-outline"
+            :append-inner-icon="
+              loginRules.showPassword ? 'mdi-eye' : 'mdi-eye-off'
+            "
             counter="64"
             maxlength="64"
             clearable
+            variant="underlined"
             color="green-darken-2"
             v-model="account.password"
+            :rules="loginRules.password"
+            :type="loginRules.showPassword ? 'text' : 'password'"
+            @click:append-inner="
+              loginRules.showPassword = !loginRules.showPassword
+            "
           ></v-text-field>
-        </div>
+        </v-row>
+        <v-row class="mt-n10">
+          <v-col cols="6" class="pl-1">
+            <v-checkbox
+              label="Duy trì đăng nhập"
+              class="align-center text-black"
+              color="green"
+            ></v-checkbox>
+          </v-col>
+          <v-col cols="6" class="pt-7 text-right">
+            <!-- <v-btn>Quên mật khẩu ?</v-btn>-->
+            Quên mật khẩu ?
+          </v-col>
+        </v-row>
+        <v-row><v-btn block class="button-68">Đăng nhập</v-btn></v-row>
+        <v-row>
+          <h4 class="ml-auto mr-auto mt-8 mb-4">Bạn chưa có tài khoản ?</h4>
+          <br />
+          <router-link to="/registration" class="button-69 login-btn">
+            Tạo tài khoản mới
+          </router-link>
+        </v-row>
+        <v-footer class="mt-10 mb-2">
+          <v-row justify="center">
+            {{ new Date().getFullYear() }} @<strong> NTN.com</strong>
+          </v-row>
+        </v-footer>
       </v-form>
     </v-container>
   </v-main>
-  <div id="main">
-    <div id="container">
-      <form @submit.prevent>
-        <div id="login-options">
-          <label class="checkbox-container">
-            <input type="checkbox" />Duy trì đăng nhập
-            <span class="checkbox-checkmark"></span>
-          </label>
-          <span id="forgot">Quên mật khấu ?</span>
-        </div>
-
-        <button
-          class="login-btn button-68"
-          title="CLick to login"
-          @click="submit"
-        >
-          ĐĂNG NHẬP
-        </button>
-      </form>
-
-      <h4>Bạn chưa có tài khoản ?</h4>
-      <router-link to="/registration" class="login-btn button-69"
-        >TẠO TÀI KHOẢN MỚI</router-link
-      >
-
-      <footer><a href="">NTN.com</a></footer>
-    </div>
-  </div>
 </template>
 
 <script>
 // heroicons import
 //
+import "@/assets/style/style.scss";
+
 import { loginRules } from "@/utils/FormValidate.js";
 
 export default {
@@ -94,7 +104,23 @@ export default {
 </script>
 
 <style lang="scss">
-.v-field__overlay {
+.login-bg {
+  background-image: url("../assets/imgs/bg-01.webp");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+.login-ctn {
+  width: 32rem;
+  margin: 0 auto;
+  border-radius: 15px;
+  padding: 3rem;
+  box-sizing: border-box;
+  background-color: white;
+}
+
+.v-field--variant-filled .v-field__overlay {
   background-color: white !important;
 }
 
@@ -128,97 +154,12 @@ export default {
   }
 }
 
-//.v-field--error:not(.v-field--disabled) .v-label.v-field-label,
-//.v-input--error:not(.v-input--disabled) .v-input__details .v-messages,
-//.v-field--error:not(.v-field--disabled) .v-field__prepend-inner > .v-icon {
-//  color: red;
-//}
-
-div#main {
-  position: relative;
-  overflow: auto;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow-y: scroll;
+.v-btn.v-btn--density-default {
+  height: fit-content;
 }
 
-div#container {
-  /*margin: auto;*/
-  position: relative;
-  height: auto;
-  width: 30rem;
-  background-color: white;
-  border-radius: 15px;
-  padding: 24px 40px;
-}
-
-form {
-  position: relative;
-  width: 100%;
-}
-
-div#login-options {
-  width: 100%;
-  display: flex;
-  margin-bottom: 1rem;
-}
-
-div#login-options > label {
-  flex: 1;
-}
-
-div#login-options > span#forgot {
-  text-align: right;
-  flex: 1;
-}
-
-footer {
-  text-align: center;
-  margin-top: 1.5rem;
-}
-
-footer a {
+.router-link-active {
   text-decoration: none;
-  color: darkgrey;
-}
-
-.field-container {
-  width: 100%;
-  margin: 1.5rem 0px 1rem;
-  position: relative;
-  top: 0px;
-  display: block;
-}
-
-h1,
-h2,
-h4 {
-  text-align: center;
-  margin: 1rem 0px;
-}
-
-h3 {
-  text-align: left;
-  margin: 0.5rem 0px;
-}
-
-.login-input {
-  width: 100%;
-  height: 36px;
-  padding-left: 32px;
-  padding-bottom: 8px;
-  border: none;
-  border-bottom: 2px solid #ccc;
-  font-size: 1rem;
-}
-
-input.login-input:focus-visible {
-  border-bottom: 2px solid #27ae60;
-  transition: 0.75s ease;
 }
 
 .login-btn {
@@ -227,23 +168,6 @@ input.login-input:focus-visible {
   font-weight: bold;
   cursor: pointer;
   border-radius: 15px;
-}
-
-span.login-err {
-  display: none;
-  margin: 10px 0px;
-  color: red;
-}
-
-.user-icon,
-.pwd-icon {
-  width: 1.5rem;
-  height: 1.5rem;
-  position: absolute;
-  color: grey;
-}
-
-.router-link-active {
-  text-decoration: none;
+  text-transform: uppercase;
 }
 </style>
