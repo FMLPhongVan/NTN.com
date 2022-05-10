@@ -2,33 +2,45 @@
   <header class="header">
     <div class="logo"></div>
     <v-row id="search-wrapper">
-      <v-autocomplete
-        label="Tìm kiếm"
-        placeholder="Tìm kiếm"
-        variant="contained"
-        counter="64"
-        maxlength="64"
-        single-line
-        clearable
-        hide-details
-        hide-selected
-        flat
-        :items="suggestion"
-        @keyup.enter="searching = true"
-        prepend-inner-icon="mdi-magnify"
-        v-model.lazy="searchContent"
-      >
-        <template v-slot:no-data>
-          <v-list-item>
-            <v-list-item-title>
-              Tìm kiếm
-              <strong>{{ searchContent }}</strong>
-            </v-list-item-title>
-          </v-list-item>
-        </template>
-      </v-autocomplete>
+      <v-col id="search-list">
+        <v-text-field
+          label="Tìm kiếm"
+          placeholder="Tìm kiếm"
+          variant="contained"
+          counter="64"
+          maxlength="64"
+          single-line
+          clearable
+          hide-details
+          @click:clear="suggestsShow = false"
+          @click="suggestsShow = true"
+          @update:model-value="suggestsShow = true"
+          @keyup.enter="search"
+          :disabled="isSearching"
+          v-click-outside="() => (suggestsShow = false)"
+          prepend-inner-icon="mdi-magnify"
+          v-model="searchContent"
+        >
+        </v-text-field>
+        <v-card class="mt-2" v-if="suggestsShow">
+          <v-list>
+            <v-list-subheader>Tìm kiếm gần đây</v-list-subheader>
+            <v-list-item
+              v-for="(suggestion, i) in suggestions"
+              :key="i"
+              :value="suggestion"
+              @click="
+                searchContent = suggestion;
+                isSearching = true;
+              "
+            >
+              <v-list-item-title v-text="suggestion"></v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-card>
+      </v-col>
       <v-progress-circular
-        v-if="searching"
+        v-if="isSearching"
         size="24"
         color="#27ae60"
         indeterminate
@@ -47,6 +59,7 @@
         @click="notiShow = !notiShow"
         :class="{ 'in-use': notiShow }"
         class="page-tab"
+        v-click-outside="hideNoti"
       >
         <notifications-icon class="nav-icon"></notifications-icon>
       </div>
@@ -67,6 +80,7 @@
       :color="optionsShow ? '#23ae60' : undefined"
       @click="optionsShow = !optionsShow"
       :class="{ 'opts-show': optionsShow }"
+      v-click-outside="hideOpts"
     >
       <options-icon></options-icon>
     </v-card>
@@ -96,18 +110,32 @@ export default {
   data() {
     return {
       searchContent: "",
-      searching: false,
-      suggestion: [1, 2, 3],
+      isSearching: false,
+      suggestions: ["111111111111111111111111111111", 2, 3],
       displayName: "Tunggggggggg",
+      suggestsShow: false,
       notiShow: false,
       optionsShow: false,
     };
   },
 
+  methods: {
+    search() {
+      this.isSearching = true;
+      this.suggestsShow = false;
+    },
+    hideNoti() {
+      this.notiShow = false;
+    },
+    hideOpts() {
+      this.optionsShow = false;
+    },
+  },
+
   watch: {
-    searching(val) {
+    isSearching(val) {
       if (!val) return;
-      setTimeout(() => (this.searching = false), 2500);
+      setTimeout(() => (this.isSearching = false), 2500);
     },
   },
 };
@@ -144,10 +172,6 @@ button:not(:disabled) {
   margin-left: 10px;
 }
 
-img {
-  width: 100%;
-}
-
 #search-wrapper {
   display: flex;
   align-items: center;
@@ -156,18 +180,13 @@ img {
   flex: none;
 }
 
+.v-icon {
+  opacity: 1 !important;
+}
+
 .v-text-field {
   background-color: #f0f0f0 !important;
   border-radius: 100px;
-}
-
-.v-autocomplete__selection {
-  display: none;
-}
-
-.v-autocomplete--single.v-text-field input {
-  align-self: center;
-  position: relative;
 }
 
 .v-label.v-field-label {
@@ -189,23 +208,37 @@ img {
 .v-field__prepend-inner {
   padding: 0;
   align-self: center;
-  color: #07ab4b;
+  color: #0dd05e;
+  opacity: 1;
 }
 
-.v-field__append-inner > .v-icon {
-  display: none;
+#search-list {
+  padding: 10px;
 }
 
-.v-progress-circular {
-  margin-left: 6px;
+.v-list-subheader {
+  font-size: 18px;
+  color: #00c150;
+}
+
+.v-list-subheader__text {
+  opacity: 1;
 }
 
 .v-list {
-  color: #27ae60;
+  color: #27ae60 !important;
+  padding: 0 !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 250px;
+}
+
+.v-progress-circular {
+  align-self: baseline;
+  margin-top: 18px;
 }
 
 nav {
-  display: flex;
   position: absolute;
   text-align: center;
   margin: auto;
@@ -215,6 +248,7 @@ nav {
 .page-tab {
   color: black;
   border-radius: 12px;
+  top: 200px;
   margin-top: 4px;
   margin-left: 6px;
   margin-right: 6px;
@@ -239,7 +273,7 @@ nav {
 }
 
 .in-use {
-  border-bottom: 4px solid #27ae60;
+  border-bottom: 2px solid #27ae60;
   border-radius: 0px;
   transition-duration: 0.35s;
 }
@@ -298,8 +332,8 @@ nav {
 .user-name {
   margin-left: 5px;
   overflow: hidden;
-  text-decoration: none;
   text-overflow: ellipsis;
+  text-decoration: none;
   max-width: 100px;
 }
 
