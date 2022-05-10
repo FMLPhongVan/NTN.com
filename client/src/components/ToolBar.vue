@@ -2,7 +2,7 @@
   <header class="header">
     <div class="logo"></div>
     <v-row id="search-wrapper">
-      <v-col id="search-list">
+      <v-col id="search-list" :class="{ 'full-search': suggestsShow }">
         <v-text-field
           label="Tìm kiếm"
           placeholder="Tìm kiếm"
@@ -22,22 +22,24 @@
           v-model="searchContent"
         >
         </v-text-field>
-        <v-card class="mt-2" v-if="suggestsShow">
-          <v-list>
-            <v-list-subheader>Tìm kiếm gần đây</v-list-subheader>
-            <v-list-item
-              v-for="(suggestion, i) in suggestions"
-              :key="i"
-              :value="suggestion"
-              @click="
-                searchContent = suggestion;
-                isSearching = true;
-              "
-            >
-              <v-list-item-title v-text="suggestion"></v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-card>
+        <v-fade-transition>
+          <v-card class="mt-2" v-show="suggestsShow">
+            <v-list>
+              <v-list-subheader>Tìm kiếm gần đây</v-list-subheader>
+              <v-list-item
+                v-for="(suggestion, i) in suggestions"
+                :key="i"
+                :value="suggestion"
+                @click="
+                  searchContent = suggestion;
+                  isSearching = true;
+                "
+              >
+                <v-list-item-title v-text="suggestion"></v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-card>
+        </v-fade-transition>
       </v-col>
       <v-progress-circular
         v-if="isSearching"
@@ -75,15 +77,31 @@
         </div>
       </div>
     </router-link>
-    <v-card
-      id="options"
-      :color="optionsShow ? '#23ae60' : undefined"
-      @click="optionsShow = !optionsShow"
-      :class="{ 'opts-show': optionsShow }"
-      v-click-outside="hideOpts"
-    >
-      <options-icon></options-icon>
-    </v-card>
+    <v-col>
+      <v-card
+        id="opts"
+        :color="optionsShow ? '#23ae60' : undefined"
+        @click="optionsShow = !optionsShow"
+        :class="{ 'opts-show': optionsShow }"
+        v-click-outside="hideOpts"
+      >
+        <options-icon></options-icon>
+        <v-card id="opts-list" v-if="optionsShow">
+          <v-list>
+            <v-list-item
+              v-for="(option, i) in options"
+              :key="i"
+              :value="option"
+            >
+              <v-list-item-avatar start>
+                <v-icon :icon="option.icon"></v-icon>
+              </v-list-item-avatar>
+              <v-list-item-title v-text="option.text"></v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-card>
+      </v-card>
+    </v-col>
   </header>
 </template>
 
@@ -111,10 +129,14 @@ export default {
     return {
       searchContent: "",
       isSearching: false,
-      suggestions: ["111111111111111111111111111111", 2, 3],
+      suggestions: ["111111111111111111111111111111", "2", "3"],
       displayName: "Tunggggggggg",
       suggestsShow: false,
       notiShow: false,
+      options: [
+        { text: "Cài đặt", icon: "mdi-cog" },
+        { text: "Đăng xuất", icon: "mdi-logout" },
+      ],
       optionsShow: false,
     };
   },
@@ -174,9 +196,9 @@ button:not(:disabled) {
 
 #search-wrapper {
   display: flex;
-  align-items: center;
-  margin-top: 2px;
-  margin-bottom: 2px;
+  margin-top: auto;
+  margin-bottom: auto;
+  padding-bottom: 10px;
   flex: none;
 }
 
@@ -197,7 +219,6 @@ button:not(:disabled) {
 
 .v-input--density-default .v-field--variant-contained {
   --v-input-control-height: 40px;
-  width: 250px;
   border-radius: 100px;
   background: #f5f5f5;
 }
@@ -212,8 +233,24 @@ button:not(:disabled) {
   opacity: 1;
 }
 
+.full-search {
+  width: 330px !important;
+  background-color: white;
+  transform: translateX(-80px);
+  transition-duration: 0.3s;
+  box-shadow: 0px 2px 1px -1px rgb(0 0 0 / 20%),
+    0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%);
+  border-bottom-right-radius: 10px;
+}
+
 #search-list {
   padding: 10px;
+  width: 250px;
+  transition-duration: 0.5s;
+}
+
+.v-card--variant-contained {
+  box-shadow: none;
 }
 
 .v-list-subheader {
@@ -230,11 +267,16 @@ button:not(:disabled) {
   padding: 0 !important;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 250px;
+  max-width: 330px;
+}
+
+.v-list-item__overlay {
+  border-radius: 10px;
 }
 
 .v-progress-circular {
   align-self: baseline;
+  margin-left: 8px;
   margin-top: 18px;
 }
 
@@ -337,7 +379,7 @@ nav {
   max-width: 100px;
 }
 
-#options {
+#opts {
   color: #27ae60;
   align-self: center;
   width: 40px;
@@ -352,5 +394,13 @@ nav {
 .opts-show {
   color: white !important;
   transition-duration: 0.35s;
+}
+
+#opts-list {
+  float: right;
+  width: 260px;
+  margin-top: 1.45px;
+  box-shadow: 0 4px 8px -2px rgba(0, 0, 0, 0.2),
+    0 6px 20px -2px rgba(0, 0, 0, 0.19);
 }
 </style>
