@@ -1,7 +1,7 @@
 <template>
   <header class="header">
-    <div class="logo"></div>
-    <v-row id="search-wrapper">
+    <router-link to="/home" class="logo"></router-link>
+    <v-row-auto id="search-wrapper">
       <v-col id="search-list" :class="{ 'full-search': suggestsShow }">
         <v-text-field
           label="Tìm kiếm"
@@ -13,7 +13,7 @@
           clearable
           hide-details
           @click:clear="suggestsShow = false"
-          @click="suggestsShow = true"
+          @click:control="suggestsShow = true"
           @update:model-value="suggestsShow = true"
           @keyup.enter="search"
           :disabled="isSearching"
@@ -47,37 +47,43 @@
         color="#27ae60"
         indeterminate
       ></v-progress-circular>
-    </v-row>
+    </v-row-auto>
     <nav>
-      <router-link to="/home" :class="homeInUse" class="page-tab">
-        <home-icon class="nav-icon"></home-icon>
-      </router-link>
-      <router-link to="/friends" :class="friendsInUse" class="page-tab">
-        <friends-icon class="nav-icon"></friends-icon>
-      </router-link>
-      <div
-        id="notifications"
-        type="button"
-        @click="notiShow = !notiShow"
-        :class="{ 'in-use': notiShow }"
-        class="page-tab"
-        v-click-outside="hideNoti"
-      >
-        <notifications-icon class="nav-icon"></notifications-icon>
-      </div>
-      <router-link to="/messages" :class="messagesInUse" class="page-tab">
-        <messages-icon class="nav-icon"></messages-icon>
-      </router-link>
-    </nav>
-    <router-link to="/profile" class="profile">
-      <div class="user-profile">
-        <div class="user-avatar avatar"></div>
-        <div class="user-name">
-          {{ displayName }}
+      <v-row id="nav-wrapper">
+        <router-link to="/home" :class="homeInUse" class="page-tab">
+          <home-icon class="nav-icon"></home-icon>
+        </router-link>
+        <router-link to="/friends" :class="friendsInUse" class="page-tab">
+          <friends-icon class="nav-icon"></friends-icon>
+        </router-link>
+        <div
+          id="notifications"
+          type="button"
+          @click="notiShow = !notiShow"
+          :class="{ 'tab-in-use': notiShow }"
+          class="page-tab"
+          v-click-outside="hideNoti"
+        >
+          <notifications-icon class="nav-icon"></notifications-icon>
         </div>
-      </div>
-    </router-link>
-    <v-col>
+        <router-link to="/messages" :class="messagesInUse" class="page-tab">
+          <messages-icon class="nav-icon"></messages-icon>
+        </router-link>
+      </v-row>
+    </nav>
+    <v-col-auto id="prof-wrapper">
+      <v-card class="profile">
+        <router-link to="/profile">
+          <div class="user-profile">
+            <div class="avatar"></div>
+            <div class="user-name">
+              {{ displayName }}
+            </div>
+          </div>
+        </router-link>
+      </v-card>
+    </v-col-auto>
+    <v-col-auto id="opts-wrapper">
       <v-card
         id="opts"
         :color="optionsShow ? '#23ae60' : undefined"
@@ -86,22 +92,24 @@
         v-click-outside="hideOpts"
       >
         <options-icon></options-icon>
-        <v-card id="opts-list" v-if="optionsShow">
-          <v-list>
-            <v-list-item
-              v-for="(option, i) in options"
-              :key="i"
-              :value="option"
-            >
-              <v-list-item-avatar start>
-                <v-icon :icon="option.icon"></v-icon>
-              </v-list-item-avatar>
-              <v-list-item-title v-text="option.text"></v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-card>
+        <v-fade-transition>
+          <v-card id="opts-list" v-show="optionsShow">
+            <v-list>
+              <v-list-item
+                v-for="(option, i) in options"
+                :key="i"
+                :value="option"
+              >
+                <v-list-item-avatar start>
+                  <v-icon :icon="option.icon"></v-icon>
+                </v-list-item-avatar>
+                <v-list-item-title v-text="option.text"></v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-card>
+        </v-fade-transition>
       </v-card>
-    </v-col>
+    </v-col-auto>
   </header>
 </template>
 
@@ -178,6 +186,9 @@ button:not(:disabled) {
   box-shadow: 0 4px 8px -2px rgba(0, 0, 0, 0.2),
     0 6px 20px -2px rgba(0, 0, 0, 0.19);
   justify-content: center;
+  position: sticky;
+  top: 0;
+  z-index: 1;
   display: flex;
 }
 
@@ -195,8 +206,12 @@ button:not(:disabled) {
 }
 
 #search-wrapper {
+  position: absolute;
+  left: 80px;
+  z-index: 1;
   display: flex;
   margin-top: auto;
+  margin-right: initial;
   margin-bottom: auto;
   padding-bottom: 10px;
   flex: none;
@@ -208,7 +223,7 @@ button:not(:disabled) {
 
 .v-text-field {
   background-color: #f0f0f0 !important;
-  border-radius: 100px;
+  border-radius: 25px;
 }
 
 .v-label.v-field-label {
@@ -219,7 +234,7 @@ button:not(:disabled) {
 
 .v-input--density-default .v-field--variant-contained {
   --v-input-control-height: 40px;
-  border-radius: 100px;
+  border-radius: 25px;
   background: #f5f5f5;
 }
 
@@ -246,7 +261,9 @@ button:not(:disabled) {
 #search-list {
   padding: 10px;
   width: 250px;
+  position: relative;
   transition-duration: 0.5s;
+  transition-timing-function: ease;
 }
 
 .v-card--variant-contained {
@@ -280,22 +297,25 @@ button:not(:disabled) {
   margin-top: 18px;
 }
 
+#nav-wrapper {
+  max-height: 60px;
+  overflow: hidden;
+}
+
 nav {
-  position: absolute;
   text-align: center;
   margin: auto;
-  margin-right: auto;
 }
 
 .page-tab {
+  float: left;
   color: black;
-  border-radius: 12px;
+  border-radius: 8px;
   top: 200px;
   margin-top: 4px;
   margin-left: 6px;
   margin-right: 6px;
   align-self: center;
-  display: inline-block;
 }
 
 .page-tab:hover {
@@ -314,7 +334,7 @@ nav {
   transition-duration: 0.3s;
 }
 
-.in-use {
+.tab-in-use {
   border-bottom: 2px solid #27ae60;
   border-radius: 0px;
   transition-duration: 0.35s;
@@ -324,22 +344,23 @@ nav {
   color: #27ae60;
   width: 28px;
   height: 40px;
-  margin-top: 8px;
-  margin-left: 3.25vw;
-  margin-right: 3.25vw;
+  margin-top: 7.5px;
+  margin-left: 3vw;
+  margin-right: 3vw;
+}
+
+#prof-wrapper {
+  float: right;
+  align-self: center;
 }
 
 .profile {
   float: right;
+  display: block;
   margin-top: 4px;
   margin-bottom: 4px;
-  margin-right: auto;
-  display: block;
-  position: absolute;
-  left: 80vw;
-  border-radius: 50px;
-  border-top-right-radius: 20px;
-  border-bottom-right-radius: 20px;
+  // margin-right: auto;
+  border-radius: 25px;
 }
 
 .user-profile {
@@ -349,9 +370,7 @@ nav {
   align-items: center;
   font-size: 100%;
   padding-right: 5px;
-  border-radius: 50px;
-  border-top-right-radius: 20px;
-  border-bottom-right-radius: 20px;
+  border-radius: 25px;
 }
 
 .user-profile:hover {
@@ -364,10 +383,13 @@ nav {
 }
 
 .avatar {
+  background-image: url("../assets/imgs/photo-1535713875002-d1d0cf377fde.jpeg");
+  background-repeat: no-repeat;
+  background-size: cover;
   width: 52px;
   height: 52px;
   padding: 1.5px;
-  border-radius: 100px;
+  border-radius: 25px;
   box-sizing: border-box;
 }
 
@@ -379,16 +401,20 @@ nav {
   max-width: 100px;
 }
 
+#opts-wrapper {
+  align-self: center;
+}
+
 #opts {
   color: #27ae60;
   align-self: center;
   width: 40px;
   height: 40px;
   float: right;
+  display: block;
   margin-left: auto;
   margin-right: 1rem;
-  display: block;
-  border-radius: 50px;
+  border-radius: 25px;
 }
 
 .opts-show {
@@ -397,10 +423,16 @@ nav {
 }
 
 #opts-list {
+  z-index: 1;
   float: right;
   width: 260px;
   margin-top: 1.45px;
   box-shadow: 0 4px 8px -2px rgba(0, 0, 0, 0.2),
     0 6px 20px -2px rgba(0, 0, 0, 0.19);
+  transition-duration: 0.35s;
+}
+
+#opts-list .v-list {
+  border-radius: 15px;
 }
 </style>
