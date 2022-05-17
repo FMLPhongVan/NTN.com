@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-card min-width="500px">
+    <v-card>
       <v-card-header class="justify-space-between">
         <div class="d-flex">
           <v-avatar size="x-large">
@@ -42,24 +42,32 @@
           </p>
         </v-card-text>
         <v-row>
-          <v-col v-for="n in 9" :key="n" class="d-flex child-flex" cols="4">
-            <v-img
-              :src="`https://picsum.photos/500/300?image=${n * 5 + 10}`"
-              :lazy-src="`https://picsum.photos/10/6?image=${n * 5 + 10}`"
-              aspect-ratio="1"
+          <v-carousel hide-delimiters show-arrows-on-hover>
+            <template v-slot:prev="{ props }">
+              <v-btn
+                v-bind="props"
+                icon="mdi-chevron-left"
+                class="w-auto"
+                size="x-large"
+                @click="props.onClick"
+              ></v-btn>
+            </template>
+            <template v-slot:next="{ props }">
+              <v-btn
+                v-bind="props"
+                icon="mdi-chevron-right"
+                class="w-auto"
+                size="x-large"
+                @click="props.onClick"
+              ></v-btn>
+            </template>
+            <v-carousel-item
+              v-for="(item, i) in imgs"
+              :key="i"
+              :src="item.src"
               cover
-              class="bg-grey-lighten-2"
-            >
-              <template v-slot:placeholder>
-                <v-row class="fill-height ma-0" align="center" justify="center">
-                  <v-progress-circular
-                    indeterminate
-                    color="grey-lighten-5"
-                  ></v-progress-circular>
-                </v-row>
-              </template>
-            </v-img>
-          </v-col>
+            ></v-carousel-item>
+          </v-carousel>
         </v-row>
       </v-card-content>
     </v-card>
@@ -78,6 +86,23 @@ export default {
         { title: "Click Messsssssssssss" },
         { title: "Click Measdasdasda" },
         { title: "Click Me 2" },
+      ],
+      imgs: [
+        {
+          src: "../assets/imgs/photo-1535713875002-d1d0cf377fde.jpeg",
+        },
+        {
+          src: "https://cdn.vuetifyjs.com/images/carousel/squirrel.jpg",
+        },
+        {
+          src: "https://cdn.vuetifyjs.com/images/carousel/sky.jpg",
+        },
+        {
+          src: "https://www.youtube.com/watch?v=uPIaeanKmqE",
+        },
+        {
+          src: "https://cdn.vuetifyjs.com/images/carousel/planet.jpg",
+        },
       ],
       postContent:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam luctus odio sed auctor eleifend. Aenean vel suscipit magna. Cras placerat sed arcu at maximus. Mauris ut fermentum dui. Vestibulum in risus varius, sagittis risus non, blandit odio. Suspendisse ornare metus in tincidunt suscipit. Nullam ultricies enim quis leo ullamcorper, sit amet dictum ex interdum. Vestibulum eget magna eu massa blandit aliquam. Ut accumsan porta neque, sit amet feugiat lorem elementum in. Mauris efficitur fermentum orci ut dignissim. Aenean sem purus, commodo nec ligula non, suscipit efficitur ex. Nam auctor ex non enim tristique, nec pellentesque enim vulputate.\n" +

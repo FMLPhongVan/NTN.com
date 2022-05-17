@@ -39,8 +39,8 @@
             "
           ></v-text-field>
         </v-row>
-        <v-row class="mt-n10">
-          <v-col cols="6" class="pl-1">
+        <v-row class="mt-n10 justify-space-between">
+          <v-col cols="6" class="ml-n5">
             <v-checkbox
               label="Duy trì đăng nhập"
               class="align-center text-black"
@@ -52,7 +52,11 @@
             Quên mật khẩu ?
           </v-col>
         </v-row>
-        <v-row><v-btn block class="button-68">Đăng nhập</v-btn></v-row>
+        <v-row>
+          <router-link to="/home" class="button-68 login-btn" @click="submit">
+            Đăng nhập
+          </router-link>
+        </v-row>
         <v-row>
           <h4 class="ml-auto mr-auto mt-8 mb-4">Bạn chưa có tài khoản ?</h4>
           <br />
@@ -70,37 +74,38 @@
   </v-main>
 </template>
 
-<script>
+<script lang="ts">
 // heroicons import
 //
 import "@/assets/style/style.scss";
 
-import { loginRules } from "@/utils/FormValidate.js";
+import { loginRules } from "@/utils/FormValidate";
+import { defineComponent, ref } from "vue";
 
-export default {
+export default defineComponent({
   components: {},
+  props: {},
 
-  data() {
-    return {
-      account: {
-        username: "",
-        password: "",
-      },
-      loginRules,
+  setup() {
+    type Account = {
+      username: string;
+      password: string;
     };
-  },
 
-  methods: {
-    submit() {
-      if (this.account.username !== "" && this.account.password !== "") {
-        console.log(this.account.username);
+    const account = ref<Account>({
+      username: "",
+      password: "",
+    });
+
+    function submit(): void {
+      if (account.value.username !== "" && account.value.password !== "") {
+        console.log(account.value);
       }
+    }
 
-      // this.account.username = '';
-      // this.account.password = '';
-    },
+    return { account, submit };
   },
-};
+});
 </script>
 
 <style lang="scss">
