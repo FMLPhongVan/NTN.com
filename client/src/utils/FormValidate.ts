@@ -5,12 +5,15 @@ const specReg = /[!@#$^&.]/g;
 const otherReg = /[^a-zA-Z0-9._#@!&^]/g;
 
 const rules = {
-  required: (value) => !!value || "Bạn chưa điền mục này",
-  min: (v) => v.length >= 8 || "Tối thiểu 8 ký tự",
-  azCheck: (value) => azReg.test(value) || "Phải có tối thiểu 1 chữ cái thường",
-  AZCheck: (value) => AZReg.test(value) || "Phải có tối thiểu 1 chữ cái hoa",
-  numCheck: (value) => numReg.test(value) || "Phải có tối thiểu 1 chữ số",
-  specCheck: (value) =>
+  required: (value: string) => !!value || "Bạn chưa điền mục này",
+  min: (v: string) => v.length >= 8 || "Tối thiểu 8 ký tự",
+  azCheck: (value: string) =>
+    azReg.test(value) || "Phải có tối thiểu 1 chữ cái thường",
+  AZCheck: (value: string) =>
+    AZReg.test(value) || "Phải có tối thiểu 1 chữ cái hoa",
+  numCheck: (value: string) =>
+    numReg.test(value) || "Phải có tối thiểu 1 chữ số",
+  specCheck: (value: string) =>
     specReg.test(value) ||
     "Phải có tối thiểu 1 kí tự đặc biệt (!, @, #, $, ^, &, .)",
 };
@@ -28,12 +31,12 @@ const loginRules = {
   showPassword: false,
 };
 
-function isValidName(name) {
-  var re = /^[a-zA-Z]{2,}$/g; // regex here
+function isValidName(name: string) {
+  const re = /^[a-zA-Z]{2,}$/g; // regex here
   return re.test(removeAscent(name));
 }
 
-function removeAscent(str) {
+function removeAscent(str: string) {
   if (str === null || str === undefined) {
     return str;
   }
@@ -49,7 +52,7 @@ function removeAscent(str) {
   return str;
 }
 
-function isValidUserName(username) {
+function isValidUserName(username: string) {
   return (
     username.length > 7 &&
     azReg.test(username) &&
@@ -58,7 +61,7 @@ function isValidUserName(username) {
   );
 }
 
-function isValidPassword(pwd) {
+function isValidPassword(pwd: string) {
   return (
     pwd.length >= 8 &&
     azReg.test(pwd) &&
