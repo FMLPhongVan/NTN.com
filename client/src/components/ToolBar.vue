@@ -7,7 +7,6 @@
           label="Tìm kiếm"
           placeholder="Tìm kiếm"
           variant="contained"
-          counter="64"
           maxlength="64"
           single-line
           clearable
@@ -23,9 +22,11 @@
         >
         </v-text-field>
         <v-fade-transition>
-          <v-card class="mt-2" v-show="suggestsShow">
+          <v-card class="mt-2" v-if="suggestsShow">
             <v-list>
-              <v-list-subheader>Tìm kiếm gần đây</v-list-subheader>
+              <v-list-subheader v-if="searchContent == ''"
+                >Tìm kiếm gần đây</v-list-subheader
+              >
               <v-list-item
                 v-for="(suggestion, i) in suggestions"
                 :key="i"
@@ -50,34 +51,41 @@
     </v-row-auto>
     <nav>
       <v-row id="nav-wrapper">
-        <router-link to="/home" :class="homeInUse" class="page-tab">
-          <home-icon class="nav-icon"></home-icon>
+        <router-link to="/home" active-class="tab-in-use" class="page-tab">
+          <v-icon size="large" class="nav-icon" :icon="homeIcon"></v-icon>
+          <v-tooltip activator="parent" anchor="bottom">Trang chủ</v-tooltip>
         </router-link>
-        <router-link to="/friends" :class="friendsInUse" class="page-tab">
-          <friends-icon class="nav-icon"></friends-icon>
+        <router-link to="/friends" active-class="tab-in-use" class="page-tab">
+          <v-icon size="large" class="nav-icon" :icon="friendsIcon"></v-icon>
+          <v-tooltip activator="parent" anchor="bottom">Bạn bè</v-tooltip>
+        </router-link>
+        <router-link to="/messages" active-class="tab-in-use" class="page-tab">
+          <v-icon
+            size="large"
+            class="nav-icon"
+            :icon="'mdi-chat-processing-outline'"
+          ></v-icon>
+          <v-tooltip activator="parent" anchor="bottom">Tin nhắn</v-tooltip>
         </router-link>
         <div
-          id="notifications"
           type="button"
-          @click="notiShow = !notiShow"
-          :class="{ 'tab-in-use': notiShow }"
           class="page-tab"
+          :class="{ 'tab-in-use': notiShow }"
+          @click="notiShow = !notiShow"
           v-click-outside="hideNoti"
         >
-          <notifications-icon class="nav-icon"></notifications-icon>
+          <v-icon class="nav-icon" :icon="notiIcon"></v-icon>
+          <v-tooltip activator="parent" anchor="bottom">Thông báo</v-tooltip>
         </div>
-        <router-link to="/messages" :class="messagesInUse" class="page-tab">
-          <messages-icon class="nav-icon"></messages-icon>
-        </router-link>
       </v-row>
     </nav>
     <v-col-auto id="prof-wrapper">
       <v-card class="profile">
         <router-link to="/profile">
           <div class="user-profile">
-            <div class="avatar"></div>
+            <v-avatar class="avatar" size="large"></v-avatar>
             <div class="user-name">
-              {{ displayName }}
+              {{ $store.state.userDisplayName }}
             </div>
           </div>
         </router-link>
@@ -91,7 +99,7 @@
         :class="{ 'opts-show': optionsShow }"
         v-click-outside="hideOpts"
       >
-        <options-icon></options-icon>
+        <v-icon icon="mdi-chevron-down" size="40px"></v-icon>
         <v-fade-transition>
           <v-card id="opts-list" v-show="optionsShow">
             <v-list>
@@ -109,36 +117,26 @@
           </v-card>
         </v-fade-transition>
       </v-card>
+      <v-tooltip activator="parent" anchor="bottom">Thêm...</v-tooltip>
     </v-col-auto>
   </header>
 </template>
 
 <script>
-import {
-  HomeIcon,
-  UsersIcon,
-  ChatIcon,
-  AnnotationIcon,
-  ChevronDownIcon,
-} from "@heroicons/vue/solid";
-
 export default {
+  components: {},
   name: "ToolBar",
-
-  components: {
-    "home-icon": HomeIcon,
-    "friends-icon": UsersIcon,
-    "notifications-icon": AnnotationIcon,
-    "messages-icon": ChatIcon,
-    "options-icon": ChevronDownIcon,
-  },
 
   data() {
     return {
       searchContent: "",
+      homeIcon: "mdi-home-outline",
+      friendsIcon: "mdi-account-supervisor-outline",
+      messIcon: "mdi-chat-processing-outline",
+      notiIcon: "mdi-tooltip-text-outline",
       isSearching: false,
-      suggestions: ["111111111111111111111111111111", "2", "3"],
-      displayName: "Tunggggggggg",
+      searchHistory: ["1", "2", "3"],
+      suggestions: [],
       suggestsShow: false,
       notiShow: false,
       options: [
@@ -149,23 +147,74 @@ export default {
     };
   },
 
+  created() {
+    if (window.location.pathname == "/home") {
+      this.homeIcon = "mdi-home";
+    } else {
+      this.homeIcon = "mdi-home-outline";
+    }
+
+    if (window.location.pathname == "/friends") {
+      this.friendsIcon = "mdi-account-supervisor";
+    } else {
+      this.friendsIcon = "mdi-account-supervisor-outline";
+    }
+
+    if (window.location.pathname == "/messages") {
+      this.messIcon = "mdi-chat-processing";
+    } else {
+      this.messIcon = "mdi-chat-processing-outline";
+    }
+    this.suggestions = this.searchHistory.slice();
+  },
+
+  computed: {},
+
   methods: {
     search() {
       this.isSearching = true;
       this.suggestsShow = false;
+      this.searchHistory.unshift(this.searchContent);
+      this.searchContent = "";
+      this.resetSuggestions();
+      console.log(this.searchHistory);
     },
+
+    resetSuggestions() {
+      this.suggestions = this.searchHistory.slice();
+    },
+
     hideNoti() {
       this.notiShow = false;
     },
+
     hideOpts() {
       this.optionsShow = false;
     },
   },
 
   watch: {
+    notiShow(val) {
+      if (val == false) {
+        this.notiIcon = "mdi-tooltip-text-outline";
+      } else {
+        this.notiIcon = "mdi-tooltip-text";
+      }
+    },
+
     isSearching(val) {
       if (!val) return;
       setTimeout(() => (this.isSearching = false), 2500);
+    },
+
+    searchContent(val) {
+      if (val == "") {
+        this.resetSuggestions();
+        return;
+      }
+      this.suggestions = [];
+      this.suggestions.shift();
+      this.suggestions.unshift(this.searchContent);
     },
   },
 };
@@ -179,21 +228,24 @@ button:not(:disabled) {
   cursor: pointer;
 }
 
-.header {
+header {
   width: 100%;
   height: 60px;
   background-color: white;
-  box-shadow: 0 4px 8px -2px rgba(0, 0, 0, 0.2),
-    0 6px 20px -2px rgba(0, 0, 0, 0.19);
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   justify-content: center;
   position: sticky;
   top: 0;
-  z-index: 1;
+  z-index: 100;
   display: flex;
 }
 
-.header a {
+header a {
   text-decoration: none;
+}
+
+.v-icon {
+  opacity: 1 !important;
 }
 
 .logo {
@@ -201,14 +253,14 @@ button:not(:disabled) {
   background-repeat: no-repeat;
   background-size: cover;
   width: 60px;
-  margin-right: 20px;
+  margin-right: 150px;
   margin-left: 10px;
 }
 
 #search-wrapper {
   position: absolute;
   left: 80px;
-  z-index: 1;
+  z-index: 100;
   display: flex;
   margin-top: auto;
   margin-right: initial;
@@ -217,29 +269,24 @@ button:not(:disabled) {
   flex: none;
 }
 
-.v-icon {
-  opacity: 1 !important;
-}
-
-.v-text-field {
-  background-color: #f0f0f0 !important;
-  border-radius: 25px;
-}
-
-.v-label.v-field-label {
+header .v-label.v-field-label {
   align-self: center;
-  margin: 0;
   color: black;
 }
 
-.v-input--density-default .v-field--variant-contained {
+header .v-input--density-default .v-field--variant-contained {
   --v-input-control-height: 40px;
   border-radius: 25px;
   background: #f5f5f5;
 }
 
-.v-field__input,
-.v-field__field,
+header .v-field__input {
+  align-self: center;
+  color: black !important;
+  opacity: 1;
+}
+
+header .v-field__field,
 .v-field__clearable,
 .v-field__prepend-inner {
   padding: 0;
@@ -262,36 +309,34 @@ button:not(:disabled) {
   padding: 10px;
   width: 250px;
   position: relative;
-  transition-duration: 0.5s;
+  transition-duration: 0.35s;
   transition-timing-function: ease;
 }
 
-.v-card--variant-contained {
+header .v-card--variant-contained {
   box-shadow: none;
 }
 
-.v-list-subheader {
+header .v-list-subheader {
   font-size: 18px;
-  color: #00c150;
 }
 
-.v-list-subheader__text {
+header .v-list-subheader__text {
   opacity: 1;
 }
 
-.v-list {
-  color: #27ae60 !important;
+header .v-list {
   padding: 0 !important;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 330px;
 }
 
-.v-list-item__overlay {
+header .v-list-item__overlay {
   border-radius: 10px;
 }
 
-.v-progress-circular {
+header .v-progress-circular {
   align-self: baseline;
   margin-left: 8px;
   margin-top: 18px;
@@ -307,46 +352,40 @@ nav {
   margin: auto;
 }
 
-.page-tab {
+nav .page-tab {
   float: left;
-  color: black;
   border-radius: 8px;
   top: 200px;
-  margin-top: 4px;
   margin-left: 6px;
   margin-right: 6px;
   align-self: center;
 }
 
-.page-tab:hover {
-  background-color: #90f58a;
-  color: #79f58a;
+nav .page-tab:hover:not(.tab-in-use) {
+  background-color: #f2f3f5bb;
   transition-duration: 0.35s;
 }
 
-.page-tab:hover .nav-icon {
-  color: white;
-  transition-duration: 0.35s;
-}
-
-.page-tab:active {
-  transform: translateY(1.5px) scale(1.05);
-  transition-duration: 0.3s;
-}
-
-.tab-in-use {
-  border-bottom: 2px solid #27ae60;
+nav .tab-in-use {
+  border-bottom: 3px solid #0dd05e;
   border-radius: 0px;
+  margin-top: 3px;
   transition-duration: 0.35s;
 }
 
-.nav-icon {
+nav .tab-in-use .nav-icon {
   color: #27ae60;
-  width: 28px;
-  height: 40px;
-  margin-top: 7.5px;
+}
+
+nav .nav-icon {
+  color: #65676b;
+  width: 30px;
+  height: 30px;
+  margin-top: 12px;
+  margin-bottom: 12px;
   margin-left: 3vw;
   margin-right: 3vw;
+  align-self: center;
 }
 
 #prof-wrapper {
@@ -359,7 +398,6 @@ nav {
   display: block;
   margin-top: 4px;
   margin-bottom: 4px;
-  // margin-right: auto;
   border-radius: 25px;
 }
 
@@ -374,7 +412,7 @@ nav {
 }
 
 .user-profile:hover {
-  background-color: #f0f0f0;
+  background-color: #f2f3f5bb;
   transition-duration: 0.4s;
 }
 
@@ -386,10 +424,6 @@ nav {
   background-image: url("../assets/imgs/photo-1535713875002-d1d0cf377fde.jpeg");
   background-repeat: no-repeat;
   background-size: cover;
-  width: 52px;
-  height: 52px;
-  padding: 1.5px;
-  border-radius: 25px;
   box-sizing: border-box;
 }
 
@@ -423,10 +457,10 @@ nav {
 }
 
 #opts-list {
-  z-index: 1;
+  z-index: 100;
   float: right;
   width: 260px;
-  margin-top: 1.45px;
+  margin-top: 10px;
   box-shadow: 0 4px 8px -2px rgba(0, 0, 0, 0.2),
     0 6px 20px -2px rgba(0, 0, 0, 0.19);
   transition-duration: 0.35s;

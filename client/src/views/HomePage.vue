@@ -1,16 +1,19 @@
 <template>
   <tool-bar></tool-bar>
+  <create-post-bar></create-post-bar>
   <user-post></user-post>
 </template>
 
 <script>
-import UserPost from "@/components/UserPost";
 import ToolBar from "@/components/ToolBar";
+import CreatePostBar from "@/components/CreatePostBar";
+import UserPost from "@/components/UserPost";
 
 export default {
   components: {
-    "user-post": UserPost,
     "tool-bar": ToolBar,
+    "create-post-bar": CreatePostBar,
+    "user-post": UserPost,
   },
 };
 </script>
